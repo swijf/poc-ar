@@ -6,6 +6,46 @@
 </head>
 
 <body style="margin: 0px; overflow: hidden;">
+    <script>
+        AFRAME.registerComponent('place-on-marker', {
+            init: function() {
+                // De elementen die we nodig hebben
+                const marker = this.el;
+                const modelToPlace = document.querySelector('#permanent-model');
+                let hasPlaced = false; // Vlag om te zorgen dat we het maar één keer plaatsen
+
+                // Luister naar het 'markerFound' event
+                marker.addEventListener('markerFound', (event) => {
+                    // Als het model al geplaatst is, doe niets
+                    if (hasPlaced) {
+                        return;
+                    }
+
+                    hasPlaced = true;
+
+                    // Vraag de wereldpositie en -rotatie van de marker op
+                    const markerWorldPosition = new THREE.Vector3();
+                    const markerWorldRotation = new THREE.Quaternion();
+                    marker.object3D.getWorldPosition(markerWorldPosition);
+                    marker.object3D.getWorldQuaternion(markerWorldRotation);
+
+                    // Pas deze positie en rotatie toe op ons model
+                    modelToPlace.object3D.position.copy(markerWorldPosition);
+                    modelToPlace.object3D.quaternion.copy(markerWorldRotation);
+                    
+                    // Maak het model zichtbaar
+                    modelToPlace.setAttribute('visible', 'true');
+                });
+
+                // Optioneel: klik op het model om het te resetten
+                modelToPlace.addEventListener('click', () => {
+                    modelToPlace.setAttribute('visible', 'false');
+                    hasPlaced = false; // Reset de vlag zodat je opnieuw kunt scannen
+                });
+            }
+        });
+    </script>
+
     <a-scene 
         embedded 
         arjs="sourceType: webcam; debugUIEnabled: false;" 
@@ -14,25 +54,27 @@
         <a-entity light="type: ambient; color: #FFF; intensity: 0.7"></a-entity>
         <a-entity light="type: hemisphere; color: #FFF; groundColor: #BBB; intensity: 1"></a-entity>
 
+        <a-entity
+            id="permanent-model"
+            gltf-model="./model.glb"
+            visible="false"
+            scale="300 300 300"
+            position="0 0 0" 
+            rotation="-90 0 0"
+            material="side: double"
+        >
+        </a-entity>
+
         <a-nft
             type="nft"
             url="./catalogus"
-            smooth="true"
-            smoothCount="8"
-            smoothTolerance="0.05"
-            smoothThreshold="2"
+            place-on-marker
         >
-            <a-entity
-                gltf-model="./model.glb"
-                scale="3000 3000 3000"
-                position="0 0 0"
-                rotation="-90 0 0"
-                material="side: double"
-            >
-            </a-entity>
         </a-nft>
 
-        <a-camera far="5000" near="0.01"></a-camera>
+        <a-camera>
+            <a-cursor></a-cursor>
+        </a-camera>
     </a-scene>
 </body>
 </html>
