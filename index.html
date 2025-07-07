@@ -38,12 +38,9 @@
         arjs="sourceType: webcam; debugUIEnabled: false;" 
         renderer="logarithmicDepthBuffer: true; colorManagement: true;"
     >
-        <a-assets>
-            <img id="studio-hdri" src="https://raw.githubusercontent.com/aframevr/aframe/master/examples/boilerplate/panorama/puydesancy.jpg" crossorigin="anonymous">
-        </a-assets>
-
+        <a-entity light="type: ambient; color: #FFF; intensity: 1.5"></a-entity>
         <a-entity light="type: directional; color: #FFF; intensity: 2" position="-1 2 2"></a-entity>
-        <a-sky src="#studio-hdri" rotation="0 -90 0"></a-sky>
+        <a-entity light="type: directional; color: #FFF; intensity: 1" position="1 2 -2"></a-entity>
 
         <a-entity
             id="permanent-model"
@@ -54,7 +51,7 @@
             rotation="-90 0 0"
             material="side: double"
         >
-        </a-a-entity>
+        </a-entity>
 
         <a-nft type="nft" url="./catalogus" place-on-marker></a-nft>
 
