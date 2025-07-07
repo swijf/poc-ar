@@ -6,17 +6,26 @@
 </head>
 
 <body style="margin: 0px; overflow: hidden;">
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+    <a-scene 
+        embedded 
+        arjs="sourceType: webcam; debugUIEnabled: false;" 
+        renderer="logarithmicDepthBuffer: true;"
+    >
+
+        <a-entity light="type: ambient; color: #BBB"></a-entity>
+        <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
 
         <a-nft
             type="nft"
             url="./catalogus"
             smooth="true"
             smoothCount="5"
+            smoothTolerance="0.01"
+            smoothThreshold="2"
         >
             <a-entity
                 gltf-model="./model.glb"
-                scale="1000 1000 1000"
+                scale="5000 5000 5000"
                 position="0 0 0"
                 rotation="-90 0 0"
             >
