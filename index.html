@@ -9,38 +9,25 @@
     <script>
         AFRAME.registerComponent('place-on-marker', {
             init: function() {
-                // De elementen die we nodig hebben
                 const marker = this.el;
                 const modelToPlace = document.querySelector('#permanent-model');
-                let hasPlaced = false; // Vlag om te zorgen dat we het maar één keer plaatsen
+                let hasPlaced = false;
 
-                // Luister naar het 'markerFound' event
                 marker.addEventListener('markerFound', (event) => {
-                    // Als het model al geplaatst is, doe niets
-                    if (hasPlaced) {
-                        return;
-                    }
-
+                    if (hasPlaced) return;
                     hasPlaced = true;
-
-                    // Vraag de wereldpositie en -rotatie van de marker op
                     const markerWorldPosition = new THREE.Vector3();
                     const markerWorldRotation = new THREE.Quaternion();
                     marker.object3D.getWorldPosition(markerWorldPosition);
                     marker.object3D.getWorldQuaternion(markerWorldRotation);
-
-                    // Pas deze positie en rotatie toe op ons model
                     modelToPlace.object3D.position.copy(markerWorldPosition);
                     modelToPlace.object3D.quaternion.copy(markerWorldRotation);
-                    
-                    // Maak het model zichtbaar
                     modelToPlace.setAttribute('visible', 'true');
                 });
 
-                // Optioneel: klik op het model om het te resetten
                 modelToPlace.addEventListener('click', () => {
                     modelToPlace.setAttribute('visible', 'false');
-                    hasPlaced = false; // Reset de vlag zodat je opnieuw kunt scannen
+                    hasPlaced = false;
                 });
             }
         });
@@ -49,10 +36,14 @@
     <a-scene 
         embedded 
         arjs="sourceType: webcam; debugUIEnabled: false;" 
-        renderer="logarithmicDepthBuffer: true;"
+        renderer="logarithmicDepthBuffer: true; colorManagement: true;"
     >
-        <a-entity light="type: ambient; color: #FFF; intensity: 0.7"></a-entity>
-        <a-entity light="type: hemisphere; color: #FFF; groundColor: #BBB; intensity: 1"></a-entity>
+        <a-assets>
+            <img id="studio-hdri" src="https://raw.githubusercontent.com/aframevr/aframe/master/examples/boilerplate/panorama/puydesancy.jpg" crossorigin="anonymous">
+        </a-assets>
+
+        <a-entity light="type: directional; color: #FFF; intensity: 2" position="-1 2 2"></a-entity>
+        <a-sky src="#studio-hdri" rotation="0 -90 0"></a-sky>
 
         <a-entity
             id="permanent-model"
@@ -63,14 +54,9 @@
             rotation="-90 0 0"
             material="side: double"
         >
-        </a-entity>
+        </a-a-entity>
 
-        <a-nft
-            type="nft"
-            url="./catalogus"
-            place-on-marker
-        >
-        </a-nft>
+        <a-nft type="nft" url="./catalogus" place-on-marker></a-nft>
 
         <a-camera>
             <a-cursor></a-cursor>
